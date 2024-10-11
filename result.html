@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Information</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">User Information</h1>
+        <div class="card mt-4">
+            <div class="card-body">
+                <p><strong>Name:</strong> {{ data.name }}</p>
+                <p><strong>User ID:</strong> {{ data.userId }}</p>
+                <p><strong>Status:</strong> {{ data.status }}</p>
+                <p><strong>User Type:</strong> {{ data.userType }}</p>
+                <p><strong>RB Base:</strong> {{ data.rbBase }}</p>
+                <p><strong>Auth Token Info:</strong> {{ data.authTokenInfo }}</p>
+                <p><strong>Verification Status:</strong> {{ data.verificationStatus }}</p>
+                <p><strong>Execution Status:</strong> {{ data.executionStatus }}</p>
+                <a href="{{ url_for('home') }}" class="btn btn-primary">Back</a>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.min.js"></script>
+</body>
+</html>
