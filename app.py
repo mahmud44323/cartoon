@@ -25,10 +25,17 @@ def convert(image):
     # Combine edges with the smooth image
     cartoon = cv2.bitwise_and(smooth, smooth, mask=edges)
 
-    # Enhance colors
+    # Enhance colors and increase contrast
     cartoon = cv2.cvtColor(cartoon, cv2.COLOR_RGB2HSV)
     cartoon[:, :, 1] = cv2.add(cartoon[:, :, 1], 40)  # Increase saturation
+    cartoon[:, :, 2] = cv2.add(cartoon[:, :, 2], 30)  # Increase value (brightness)
     cartoon = cv2.cvtColor(cartoon, cv2.COLOR_HSV2RGB)
+
+    # Apply a small Gaussian blur to create a 3D effect
+    cartoon = cv2.GaussianBlur(cartoon, (5, 5), 0)
+
+    # Enhance edges for a more 3D look
+    cartoon = cv2.addWeighted(cartoon, 1.5, cv2.cvtColor(edges, cv2.COLOR_GRAY2RGB), -0.5, 0)
 
     return cartoon
 
